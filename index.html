@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NSG Group — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Rajdhani:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nsg-navy:    #0A1628;
+      --nsg-blue:    #1A3A6B;
+      --nsg-red:     #C8102E;
+      --nsg-silver:  #B8C6D6;
+      --nsg-glass:   rgba(255,255,255,0.06);
+      --nsg-border:  rgba(184,198,214,0.18);
+      --nsg-glow:    rgba(200,16,46,0.25);
+      --accent:      #E8F0FE;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--nsg-navy);
+      color: var(--accent);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(26,58,107,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(200,16,46,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(10,22,40,0.9) 0%, transparent 100%);
+      z-index: 0;
+    }
+
+    /* Grid lines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(184,198,214,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184,198,214,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 0 1.5rem;
+      border-bottom: 1px solid var(--nsg-border);
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .logo-mark {
+      width: 52px;
+      height: 52px;
+      border: 2px solid var(--nsg-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--nsg-red);
+      position: relative;
+      clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+      animation: pulse-border 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 var(--nsg-glow); }
+      50%       { box-shadow: 0 0 20px 4px var(--nsg-glow); }
+    }
+
+    .logo-text h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .logo-text h1 span { color: var(--nsg-red); }
+
+    .logo-text p {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      font-size: 0.7rem;
+      color: var(--nsg-silver);
+      letter-spacing: 0.15em;
+      margin-top: 3px;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .date-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--nsg-silver);
+      letter-spacing: 0.12em;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(200,16,46,0.12);
+      border: 1px solid rgba(200,16,46,0.3);
+      border-radius: 2px;
+      padding: 4px 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #FF6B6B;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    .status-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FF6B6B;
+      animation: blink 1.5s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* ── HERO BAND ── */
+    .hero-band {
+      padding: 2.5rem 0 2rem;
+      border-bottom: 1px solid var(--nsg-border);
+      margin-bottom: 3rem;
+    }
+
+    .hero-band h2 {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      line-height: 1.3;
+    }
+
+    .hero-band h2 em {
+      font-style: normal;
+      color: var(--nsg-red);
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--nsg-silver);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--nsg-red);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .section-title h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--nsg-border);
+    }
+
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .card {
+      background: var(--nsg-glass);
+      border: 1px solid var(--nsg-border);
+      padding: 1.6rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--nsg-red), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover {
+      border-color: rgba(200,16,46,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px var(--nsg-glow);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(200,16,46,0.1);
+      border: 1px solid rgba(200,16,46,0.2);
+      clip-path: polygon(4px 0%, 100% 0%, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0% 100%, 0% 4px);
+    }
+
+    .card-icon svg { width: 20px; height: 20px; stroke: var(--nsg-red); fill: none; stroke-width: 1.5; }
+
+    .card-category {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--nsg-red);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--nsg-silver);
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      padding: 3px 8px;
+      border: 1px solid var(--nsg-border);
+      color: var(--nsg-silver);
+      letter-spacing: 0.1em;
+    }
+
+    .card-arrow {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(200,16,46,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      background: var(--nsg-red);
+    }
+
+    .card-arrow svg { width: 12px; height: 12px; stroke: var(--nsg-red); fill: none; stroke-width: 2; }
+    .card:hover .card-arrow svg { stroke: white; }
+
+    /* Shimmer effect on load */
+    .card { animation: fadeUp 0.5s ease both; }
+    .card:nth-child(1)  { animation-delay: 0.05s; }
+    .card:nth-child(2)  { animation-delay: 0.10s; }
+    .card:nth-child(3)  { animation-delay: 0.15s; }
+    .card:nth-child(4)  { animation-delay: 0.20s; }
+    .card:nth-child(5)  { animation-delay: 0.25s; }
+    .card:nth-child(6)  { animation-delay: 0.30s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── FEATURED / WIDE CARD ── */
+    .card.featured {
+      grid-column: span 2;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(200,16,46,0.08) 0%, var(--nsg-glass) 100%);
+      border-color: rgba(200,16,46,0.25);
+    }
+
+    @media (max-width: 680px) { .card.featured { grid-column: span 1; flex-direction: column; } }
+
+    .card.featured .card-icon {
+      width: 60px; height: 60px; flex-shrink: 0;
+    }
+    .card.featured .card-icon svg { width: 28px; height: 28px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--nsg-border);
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--nsg-silver);
+      letter-spacing: 0.1em;
+    }
+
+    footer p span { color: var(--nsg-red); }
+
+    /* ── FILTER TABS ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--nsg-border);
+      color: var(--nsg-silver);
+      padding: 6px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--nsg-red);
+      border-color: var(--nsg-red);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-block">
+      <div class="logo-mark">NSG</div>
+      <div class="logo-text">
+        <h1>NSG <span>Group</span></h1>
+        <p>日本板硝子株式会社 — Quick Link Portal</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="date-badge" id="live-date"></div>
+      <div class="status-pill">Portal Active</div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-band">
+    <h2>Japan Visit — <em>Resource Hub</em><br>Executive & Operations Briefing</h2>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Visit Location</span>
+        <span class="meta-value">Sungai Buloh Plant</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Division</span>
+        <span class="meta-value">Global Operations</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Portal Version</span>
+        <span class="meta-value">v1.0 — 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Hosted By</span>
+        <span class="meta-value">SharePoint / Internal IT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRESENTATIONS SECTION -->
+  <div class="section-title">
+    <span>01</span>
+    <h3>Presentations & Decks</h3>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Executive</button>
+    <button class="filter-btn">Operations</button>
+    <button class="filter-btn">Strategy</button>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- Featured Card -->
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" class="card featured">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <div>
+        <div class="card-category">Executive · Keynote</div>
+        <div class="card-title">NSG Group — Japan Visit Master Deck 2026</div>
+        <div class="card-desc">Main executive presentation covering strategic roadmap, glass innovation pipeline, and bilateral partnership agenda for the Japan visit programme.</div>
+        <div class="card-footer">
+          <span class="card-tag">PPTX · 48 SLIDES</span>
+          <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://www.google.com" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </div>
+      <div class="card-category">Operations · Overview</div>
+      <div class="card-title">Manufacturing & Supply Chain Briefing</div>
+      <div class="card-desc">Plant performance metrics, Pilkington integration update, and Shiga/Chiba facility highlights.</div>
+      <div class="card-footer">
+        <span class="card-tag">PDF · REPORT</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <div class="card-category">Strategy · Roadmap</div>
+      <div class="card-title">2026–2030 Innovation Strategy</div>
+      <div class="card-desc">Float glass, solar energy glass, and EV glazing roadmap aligned to NSG Osaka R&D centre objectives.</div>
+      <div class="card-footer">
+        <span class="card-tag">PPTX · CONFIDENTIAL</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+    <a href="https://maps.google.com" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="card-category">Logistics · Visit</div>
+      <div class="card-title">Site Visit Schedule & Itinerary</div>
+      <div class="card-desc">Day-by-day agenda, host contacts, transport logistics, and venue access for all Japan-based sites.</div>
+      <div class="card-footer">
+        <span class="card-tag">DOCX · SCHEDULE</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+    <a href="https://youtube.com" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8"/><path d="M12 3v4"/></svg>
+      </div>
+      <div class="card-category">Finance · Summary</div>
+      <div class="card-title">FY2025 Financial Performance Deck</div>
+      <div class="card-desc">Revenue, EBITDA, regional breakdown, and investor messaging for Japan stakeholder meetings.</div>
+      <div class="card-footer">
+        <span class="card-tag">PPTX · FINANCE</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- TOOLS & RESOURCES SECTION -->
+  <div class="section-title">
+    <span>02</span>
+    <h3>Tools & Resources</h3>
+  </div>
+
+  <div class="card-grid">
+
+    <a href="https://www.google.com/drive" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg>
+      </div>
+      <div class="card-category">SharePoint</div>
+      <div class="card-title">NSG Document Library</div>
+      <div class="card-desc">Central SharePoint repository for all Japan visit materials and internal docs.</div>
+      <div class="card-footer">
+        <span class="card-tag">SHAREPOINT</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+    <a href="https://www.youtube.com" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.361a1 1 0 0 1-1.447.894L15 14"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg>
+      </div>
+      <div class="card-category">Media</div>
+      <div class="card-title">NSG Video Library</div>
+      <div class="card-desc">Plant tours, product demos, and executive interview recordings for Japan visit briefings.</div>
+      <div class="card-footer">
+        <span class="card-tag">STREAM · VIDEO</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+    <a href="https://translate.google.com" target="_blank" rel="noopener" class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="card-category">Translation</div>
+      <div class="card-title">JP–EN Translation Tool</div>
+      <div class="card-desc">Real-time Japanese–English translation resource for on-site communication support.</div>
+      <div class="card-footer">
+        <span class="card-tag">TOOL · JP/EN</span>
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 <span>NSG Group</span> — Nippon Sheet Glass Co., Ltd. — Internal Use Only</p>
+    <p>Portal by <span>IT Department</span> · Node.js Hosted · v1.0.0</p>
+  </footer>
+
+</div>
+
+<script>
+  // Live date/time
+  function updateDate() {
+    const now = new Date();
+    const opts = { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' };
+    document.getElementById('live-date').textContent = now.toLocaleString('en-GB', opts).toUpperCase();
+  }
+  updateDate();
+  setInterval(updateDate, 30000);
+
+  // Filter tabs (visual only — swap to dynamic if hooked to SharePoint API)
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
