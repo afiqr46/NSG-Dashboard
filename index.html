@@ -61,31 +61,6 @@
       margin-bottom: 3rem;
     }
     .logo-block { display: flex; align-items: center; gap: 1.2rem; }
-    .logo-mark {
-      width: 54px; height: 54px;
-      background: linear-gradient(135deg, var(--nsg-blue) 0%, var(--nsg-blue-light) 100%);
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,119,182,0.3);
-      position: relative; overflow: hidden;
-    }
-    .logo-mark::before {
-      content: '';
-      position: absolute;
-      top: -30%; right: -30%;
-      width: 70%; height: 70%;
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-    }
-    .logo-mark span {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      color: white;
-      letter-spacing: 0.05em;
-      position: relative;
-    }
-    .logo-text h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.04em; color: var(--nsg-dark); line-height: 1; }
-    .logo-text h1 span { color: var(--nsg-blue); }
     .logo-text p { font-family: 'Noto Serif JP', serif; font-size: 0.68rem; font-weight: 300; color: var(--nsg-mid); letter-spacing: 0.14em; margin-top: 4px; }
     .header-right { text-align: right; }
     .date-badge { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--nsg-mid); letter-spacing: 0.1em; }
@@ -125,21 +100,32 @@
     .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; }
     .section-label span { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--nsg-blue); white-space: nowrap; }
     .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--nsg-border), transparent); }
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
-    .kpi-card.highlight { grid-column: span 2; }
-    @media (max-width: 700px) { .kpi-card.highlight { grid-column: span 1; } }
+
+    /* ── UNIFORM 5-column grid: 2 rows of 5 ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 900px)  { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px)  { .kpi-grid { grid-template-columns: 1fr; } }
+
     .kpi-card {
       background: var(--nsg-glass);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1.5px solid var(--nsg-border);
       border-radius: 14px;
-      padding: 1.5rem 1.6rem;
-      display: flex; align-items: center;
+      padding: 1.5rem 1.4rem;
+      display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      gap: 1.2rem;
+      gap: 1rem;
       text-decoration: none; color: inherit;
       cursor: pointer;
+      min-height: 130px;
       transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
       animation: riseUp 0.45s ease both;
       position: relative; overflow: hidden;
@@ -153,7 +139,7 @@
     }
     .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px var(--nsg-shadow); border-color: rgba(0,119,182,0.35); background: rgba(255,255,255,0.85); }
     .kpi-card:hover::before { opacity: 1; }
-    .kpi-card.highlight { background: linear-gradient(135deg, rgba(0,119,182,0.07) 0%, rgba(0,180,216,0.05) 100%); border-color: rgba(0,119,182,0.3); }
+
     .kpi-card:nth-child(1)  { animation-delay: 0.04s; }
     .kpi-card:nth-child(2)  { animation-delay: 0.08s; }
     .kpi-card:nth-child(3)  { animation-delay: 0.12s; }
@@ -164,45 +150,45 @@
     .kpi-card:nth-child(8)  { animation-delay: 0.32s; }
     .kpi-card:nth-child(9)  { animation-delay: 0.36s; }
     .kpi-card:nth-child(10) { animation-delay: 0.40s; }
+
     @keyframes riseUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    .kpi-left { flex: 1; }
-    .kpi-number { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--nsg-blue-light); letter-spacing: 0.2em; margin-bottom: 5px; text-transform: uppercase; }
-    .kpi-title { font-size: 1rem; font-weight: 600; color: var(--nsg-dark); line-height: 1.3; letter-spacing: 0.01em; }
-    .kpi-card.highlight .kpi-title { font-size: 1.05rem; }
-    .kpi-right { display: flex; align-items: center; gap: 0.7rem; flex-shrink: 0; }
+
+    .kpi-top { display: flex; flex-direction: column; gap: 4px; }
+    .kpi-number { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--nsg-blue-light); letter-spacing: 0.2em; text-transform: uppercase; }
+    .kpi-title { font-size: 0.92rem; font-weight: 600; color: var(--nsg-dark); line-height: 1.35; letter-spacing: 0.01em; }
+
     .link-btn {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       background: linear-gradient(135deg, var(--nsg-blue) 0%, var(--nsg-blue-light) 100%);
-      color: white; padding: 8px 18px; border-radius: 8px;
+      color: white; padding: 8px 0; border-radius: 8px;
       font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
-      text-decoration: none;
+      text-decoration: none; width: 100%;
       transition: opacity 0.2s, box-shadow 0.2s;
       box-shadow: 0 3px 12px rgba(0,119,182,0.25);
-      white-space: nowrap;
     }
     .link-btn:hover { opacity: 0.88; box-shadow: 0 6px 20px rgba(0,119,182,0.35); }
     .link-btn svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.2; }
+
     footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--nsg-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     footer p { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--nsg-mid); letter-spacing: 0.1em; }
     footer p strong { color: var(--nsg-blue); font-weight: 400; }
-    @media (max-width: 600px) { header { flex-direction: column; align-items: flex-start; gap: 1rem; } .hero { flex-direction: column; } .kpi-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 <div class="wrapper">
 
-<header>
-  <div class="logo-block">
-  <img 
-    src="nsg-logo.svg" 
-    alt="NSG Group Logo"
-    style="height: 64px; width: auto;"
-  >
-  <div class="logo-text">
-    <p>  KPI Dashboard</p>
-  </div>
-  </div>
-</header>
+  <header>
+    <div class="logo-block">
+      <img src="nsg-logo.svg" alt="NSG Group Logo" style="height: 64px; width: auto;">
+      <div class="logo-text">
+        <p>KPI Dashboard</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="date-badge" id="live-date"></div>
+      <div class="status-pill">Portal Active</div>
+    </div>
+  </header>
 
   <div class="hero">
     <div class="hero-left">
@@ -222,110 +208,90 @@
   <div class="kpi-grid">
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">01 · Training</div>
         <div class="kpi-title">Role-based Training</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">02 · Risk</div>
         <div class="kpi-title">Risk-based Thinking</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">03 · Knowledge</div>
         <div class="kpi-title">Lessons Learned</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">04 · Training</div>
         <div class="kpi-title">Training Effectiveness</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">05 · Quality</div>
         <div class="kpi-title">Corrective Action</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">06 · Compliance</div>
         <div class="kpi-title">Standard Work Compliance</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">07 · Customer</div>
         <div class="kpi-title">Reduction of Customer Complaint</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">08 · Safety</div>
         <div class="kpi-title">No Spike Case</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
-      <div class="kpi-left">
+      <div class="kpi-top">
         <div class="kpi-number">09 · Process</div>
         <div class="kpi-title">Reduction in Next Process Reject (POGG)</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
-    <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card highlight">
-      <div class="kpi-left">
-        <div class="kpi-number">10 · Logistics · Priority</div>
+    <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-number">10 · Logistics</div>
         <div class="kpi-title">Reduction in Return Cargo</div>
       </div>
-      <div class="kpi-right">
-        <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
-      </div>
+      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
     </a>
 
   </div>
 
   <footer>
     <p>© 2026 <strong>NSG Group</strong> — Nippon Sheet Glass Co., Ltd. — Internal Use Only</p>
-    <p>Portal v1.1 · Hosted via <strong>Node.js</strong> / GitHub Pages</p>
+    <p>Portal v1.2 · Hosted via <strong>Node.js</strong> / GitHub Pages</p>
   </footer>
 
 </div>
