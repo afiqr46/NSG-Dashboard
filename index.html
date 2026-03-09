@@ -3,305 +3,1020 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSG Group — KPI Dashboard Portal</title>
+  <title>NSG Group — KPI Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --nsg-blue:       #0077B6;
-      --nsg-blue-light: #00B4D8;
-      --nsg-sky:        #90E0EF;
-      --nsg-pale:       #CAF0F8;
-      --nsg-white:      #F8FBFF;
-      --nsg-dark:       #03303F;
-      --nsg-mid:        #1A5F7A;
-      --nsg-border:     rgba(0,180,216,0.2);
-      --nsg-glass:      rgba(255,255,255,0.6);
-      --nsg-shadow:     rgba(0,119,182,0.15);
+      --blue-900: #03253A;
+      --blue-800: #0A3D5C;
+      --blue-600: #0077B6;
+      --blue-400: #00B4D8;
+      --blue-200: #90E0EF;
+      --blue-100: #CAF0F8;
+      --blue-50:  #E8F7FB;
+      --white:    #FFFFFF;
+      --slate:    #F0F7FA;
+      --text-1:   #03253A;
+      --text-2:   #2C6E8A;
+      --text-3:   #7BAFC4;
+      --accent:   #FF6B35;
+      --success:  #06D6A0;
+      --card-bg:  rgba(255,255,255,0.72);
+      --card-border: rgba(0,180,216,0.18);
+      --glow: rgba(0,180,216,0.25);
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--nsg-white);
-      color: var(--nsg-dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--slate);
+      color: var(--text-1);
       min-height: 100vh;
       overflow-x: hidden;
+      cursor: none;
     }
-    body::before {
-      content: '';
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--blue-600);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, background 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--blue-400);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.35s cubic-bezier(.23,1,.32,1), width 0.25s, height 0.25s, border-color 0.2s;
+    }
+    .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent); }
+    .cursor.hover { background: var(--accent); transform: translate(-50%, -50%) scale(1.5); }
+
+    /* ── ANIMATED BACKGROUND ── */
+    .bg-layer {
       position: fixed;
       inset: 0;
+      z-index: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 0% 0%, rgba(0,180,216,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 60% at 100% 100%, rgba(0,119,182,0.10) 0%, transparent 55%),
-        linear-gradient(160deg, #EAF6FB 0%, #F8FBFF 50%, #E8F4F8 100%);
-      z-index: 0;
+        radial-gradient(ellipse 80% 60% at -10% -10%, rgba(0,119,182,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 110% 110%, rgba(0,180,216,0.07) 0%, transparent 55%),
+        linear-gradient(175deg, #EBF6FB 0%, #F5FAFC 40%, #EDF5F8 100%);
     }
-    body::after {
-      content: '';
+
+    /* floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 18s ease-in-out infinite;
+    }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,180,216,0.25), transparent 70%); top: -150px; left: -150px; animation-delay: 0s; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,119,182,0.2), transparent 70%); bottom: -100px; right: -100px; animation-delay: -6s; }
+    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(144,224,239,0.3), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -12s; }
+
+    @keyframes drift {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(30px, -20px) scale(1.05); }
+      66%      { transform: translate(-20px, 30px) scale(0.97); }
+    }
+
+    /* dot grid */
+    .dot-grid {
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(circle, rgba(0,119,182,0.07) 1px, transparent 1px);
-      background-size: 32px 32px;
       z-index: 0;
+      background-image: radial-gradient(circle, rgba(0,119,182,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
+
+    /* ── LAYOUT ── */
     .wrapper {
       position: relative;
       z-index: 1;
       max-width: 1800px;
       margin: 0 auto;
-      padding: 0 2rem 5rem;
+      padding: 0 2.5rem 6rem;
     }
+
+    /* ── HEADER ── */
     header {
-      padding: 2.2rem 0 2rem;
+      padding: 2rem 0 1.8rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 2px solid var(--nsg-border);
-      margin-bottom: 3rem;
-    }
-    .logo-block { display: flex; align-items: center; gap: 1.2rem; }
-    .logo-text p { font-family: 'Noto Serif JP', serif; font-size: 0.68rem; font-weight: 300; color: var(--nsg-mid); letter-spacing: 0.14em; margin-top: 4px; }
-    .header-right { text-align: right; }
-    .date-badge { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--nsg-mid); letter-spacing: 0.1em; }
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,180,216,0.1);
-      border: 1px solid rgba(0,180,216,0.3);
-      border-radius: 20px; padding: 4px 14px;
-      font-size: 0.62rem; letter-spacing: 0.12em;
-      color: var(--nsg-blue); margin-top: 6px;
-      text-transform: uppercase; font-weight: 500;
-    }
-    .status-pill::before {
-      content: ''; width: 6px; height: 6px;
-      border-radius: 50%; background: var(--nsg-blue-light);
-      animation: blink 2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .hero {
       margin-bottom: 3.5rem;
-      display: flex; align-items: flex-end;
-      justify-content: space-between;
-      gap: 2rem; flex-wrap: wrap;
+      position: relative;
     }
-    .hero-left h2 { font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 700; color: var(--nsg-dark); line-height: 1.2; letter-spacing: -0.01em; }
-    .hero-left h2 em { font-style: normal; color: var(--nsg-blue); }
-    .hero-left p { margin-top: 0.7rem; font-size: 0.9rem; font-weight: 300; color: var(--nsg-mid); max-width: 480px; line-height: 1.6; }
-    .target-badge {
-      background: linear-gradient(135deg, var(--nsg-blue) 0%, var(--nsg-blue-light) 100%);
-      color: white; padding: 1rem 1.8rem;
-      border-radius: 12px; text-align: center;
-      box-shadow: 0 8px 32px rgba(0,119,182,0.25);
-      flex-shrink: 0;
-    }
-    .target-badge .target-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
-    .target-badge .target-date { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.04em; margin-top: 3px; }
-    .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; }
-    .section-label span { font-family: 'DM Mono', monospace; font-size: 0.9rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--nsg-blue); white-space: nowrap; }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--nsg-border), transparent); }
 
-    /* ── UNIFORM 5-column grid: 2 rows of 5 ── */
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue-400), rgba(0,180,216,0.4), transparent);
+    }
+
+    .logo-block { display: flex; align-items: center; gap: 1.4rem; }
+
+    .logo-img-wrap {
+      position: relative;
+    }
+    .logo-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue-400), var(--blue-200));
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.3s;
+      filter: blur(8px);
+    }
+    .logo-img-wrap:hover::after { opacity: 0.6; }
+
+    .logo-text-block { display: flex; flex-direction: column; gap: 2px; }
+
+    .logo-subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      color: var(--text-2);
+      text-transform: uppercase;
+    }
+
+    .header-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-pill {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 100px;
+      padding: 6px 8px;
+      display: flex;
+      gap: 4px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 20px rgba(0,119,182,0.08);
+    }
+
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--blue-200);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-dot.active { background: var(--blue-600); transform: scale(1.3); }
+
+    .header-right { display: flex; align-items: center; gap: 1.2rem; }
+
+    .date-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-2);
+      letter-spacing: 0.1em;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(6,214,160,0.1);
+      border: 1px solid rgba(6,214,160,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: #05A87E;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 0 rgba(6,214,160,0.4);
+      animation: ping 2s ease-in-out infinite;
+    }
+    @keyframes ping {
+      0%,100% { box-shadow: 0 0 0 0 rgba(6,214,160,0.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(6,214,160,0); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 3rem;
+      margin-bottom: 4rem;
+      padding: 3rem;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue-600), var(--blue-400), var(--blue-200), transparent);
+      border-radius: 24px 24px 0 0;
+    }
+
+    /* big decorative text behind */
+    .hero-bg-text {
+      position: absolute;
+      right: -20px; bottom: -30px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11rem;
+      font-weight: 800;
+      color: rgba(0,119,182,0.04);
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      color: var(--blue-600);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      background: rgba(0,119,182,0.06);
+      border: 1px solid rgba(0,119,182,0.15);
+      border-radius: 100px;
+      padding: 5px 14px;
+      width: fit-content;
+    }
+    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue-400); }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--text-1);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-400));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 460px;
+    }
+
+    /* stats row */
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--blue-600);
+      line-height: 1;
+      counter-reset: none;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+
+    /* deadline badge */
+    .deadline-badge {
+      background: linear-gradient(145deg, var(--blue-800) 0%, var(--blue-600) 100%);
+      border-radius: 20px;
+      padding: 2.2rem 2.5rem;
+      text-align: center;
+      color: white;
+      box-shadow: 0 20px 60px rgba(0,119,182,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      min-width: 200px;
+    }
+
+    .deadline-badge::before {
+      content: '';
+      position: absolute;
+      top: -40%; right: -30%;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .deadline-badge::after {
+      content: '';
+      position: absolute;
+      bottom: -50%; left: -20%;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .deadline-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      opacity: 0.7;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .deadline-month {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0.3rem 0;
+      position: relative;
+    }
+
+    .deadline-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      opacity: 0.6;
+      position: relative;
+    }
+
+    .deadline-progress {
+      margin-top: 1.2rem;
+      position: relative;
+    }
+
+    .progress-bar-bg {
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 62%;
+      background: linear-gradient(90deg, var(--blue-200), white);
+      border-radius: 100px;
+      animation: fillBar 1.5s ease 0.5s both;
+    }
+
+    @keyframes fillBar {
+      from { width: 0; }
+      to   { width: 62%; }
+    }
+
+    .progress-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      margin-top: 6px;
+      text-align: left;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.6rem;
+    }
+
+    .section-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--blue-600);
+      text-transform: uppercase;
+      background: rgba(0,119,182,0.07);
+      border: 1px solid rgba(0,119,182,0.15);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    .section-title-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-1);
+      letter-spacing: -0.01em;
+    }
+
+    .section-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── KPI GRID ── */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 1rem;
+      gap: 1.1rem;
     }
-    @media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 900px)  { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 600px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 400px)  { .kpi-grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 1400px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 750px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 450px)  { .kpi-grid { grid-template-columns: 1fr; } }
 
     .kpi-card {
-      background: var(--nsg-glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1.5px solid var(--nsg-border);
-      border-radius: 14px;
-      padding: 1.5rem 1.4rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.6rem 1.5rem 1.4rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 1rem;
-      text-decoration: none; color: inherit;
-      cursor: pointer;
-      min-height: 160px;
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
-      animation: riseUp 0.45s ease both;
-      position: relative; overflow: hidden;
+      gap: 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      min-height: 170px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition:
+        transform 0.3s cubic-bezier(.23,1,.32,1),
+        box-shadow 0.3s cubic-bezier(.23,1,.32,1),
+        border-color 0.3s,
+        background 0.3s;
+      animation: cardIn 0.5s cubic-bezier(.23,1,.32,1) both;
     }
+
+    /* Stagger */
+    .kpi-card:nth-child(1)  { animation-delay: 0.03s; }
+    .kpi-card:nth-child(2)  { animation-delay: 0.07s; }
+    .kpi-card:nth-child(3)  { animation-delay: 0.11s; }
+    .kpi-card:nth-child(4)  { animation-delay: 0.15s; }
+    .kpi-card:nth-child(5)  { animation-delay: 0.19s; }
+    .kpi-card:nth-child(6)  { animation-delay: 0.23s; }
+    .kpi-card:nth-child(7)  { animation-delay: 0.27s; }
+    .kpi-card:nth-child(8)  { animation-delay: 0.31s; }
+    .kpi-card:nth-child(9)  { animation-delay: 0.35s; }
+    .kpi-card:nth-child(10) { animation-delay: 0.39s; }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Card number badge in corner */
+    .card-num {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: rgba(0,180,216,0.07);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+
+    /* Top accent line — hidden by default, shown on hover */
     .kpi-card::before {
-      content: ''; position: absolute;
-      left: 0; top: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, var(--nsg-blue), var(--nsg-blue-light));
-      border-radius: 14px 0 0 14px;
-      opacity: 0; transition: opacity 0.22s;
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue-400), transparent);
+      border-radius: 100px;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px var(--nsg-shadow); border-color: rgba(0,119,182,0.35); background: rgba(255,255,255,0.85); }
+
+    /* Glow beneath card */
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,180,216,0.08), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 20px 60px rgba(0,119,182,0.14), 0 4px 16px rgba(0,180,216,0.1);
+      border-color: rgba(0,180,216,0.35);
+      background: rgba(255,255,255,0.88);
+    }
+
     .kpi-card:hover::before { opacity: 1; }
+    .kpi-card:hover::after  { opacity: 1; }
+    .kpi-card:hover .card-num { color: rgba(0,180,216,0.12); }
 
-    .kpi-card:nth-child(1)  { animation-delay: 0.04s; }
-    .kpi-card:nth-child(2)  { animation-delay: 0.08s; }
-    .kpi-card:nth-child(3)  { animation-delay: 0.12s; }
-    .kpi-card:nth-child(4)  { animation-delay: 0.16s; }
-    .kpi-card:nth-child(5)  { animation-delay: 0.20s; }
-    .kpi-card:nth-child(6)  { animation-delay: 0.24s; }
-    .kpi-card:nth-child(7)  { animation-delay: 0.28s; }
-    .kpi-card:nth-child(8)  { animation-delay: 0.32s; }
-    .kpi-card:nth-child(9)  { animation-delay: 0.36s; }
-    .kpi-card:nth-child(10) { animation-delay: 0.40s; }
-
-    @keyframes riseUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-    .kpi-top { display: flex; flex-direction: column; gap: 4px; }
-    .kpi-number { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--nsg-blue-light); letter-spacing: 0.2em; text-transform: uppercase; }
-    .kpi-title { font-size: 1.4rem; font-weight: 800; color: var(--nsg-dark); line-height: 1.35; letter-spacing: 0.01em; }
-
-    .link-btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      background: linear-gradient(135deg, var(--nsg-blue) 0%, var(--nsg-blue-light) 100%);
-      color: white; padding: 8px 0; border-radius: 8px;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
-      text-decoration: none; width: 100%;
-      transition: opacity 0.2s, box-shadow 0.2s;
-      box-shadow: 0 3px 12px rgba(0,119,182,0.25);
+    .kpi-card:active {
+      transform: translateY(-2px) scale(0.99);
     }
-    .link-btn:hover { opacity: 0.88; box-shadow: 0 6px 20px rgba(0,119,182,0.35); }
-    .link-btn svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.2; }
 
-    footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--nsg-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    footer p { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--nsg-mid); letter-spacing: 0.1em; }
-    footer p strong { color: var(--nsg-blue); font-weight: 400; }
+    .kpi-top { display: flex; flex-direction: column; gap: 6px; position: relative; }
+
+    .kpi-category {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.54rem;
+      letter-spacing: 0.2em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+
+    .kpi-category::before {
+      content: '';
+      width: 14px; height: 1.5px;
+      background: var(--blue-400);
+      border-radius: 100px;
+    }
+
+    .kpi-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-1);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    /* Open button */
+    .open-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-400) 100%);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: box-shadow 0.25s, transform 0.2s;
+      box-shadow: 0 4px 16px rgba(0,119,182,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .open-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.4s;
+    }
+
+    .kpi-card:hover .open-btn { box-shadow: 0 8px 28px rgba(0,119,182,0.35); }
+    .kpi-card:hover .open-btn::before { left: 100%; }
+
+    .btn-arrow {
+      width: 22px; height: 22px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .kpi-card:hover .btn-arrow {
+      transform: translateX(3px);
+      background: rgba(255,255,255,0.3);
+    }
+
+    .btn-arrow svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 4.5rem;
+      padding: 1.8rem 2.5rem;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-logo { height: 28px; width: auto; opacity: 0.6; }
+
+    .footer-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-text strong { color: var(--text-2); font-weight: 400; }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .footer-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      background: rgba(0,119,182,0.05);
+      border: 1px solid rgba(0,119,182,0.1);
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .deadline-badge { display: none; }
+      .header-center { display: none; }
+      .hero-stats { gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .wrapper { padding: 0 1rem 4rem; }
+      .hero { padding: 2rem 1.5rem; }
+      .hero-stats { flex-wrap: wrap; gap: 1rem; }
+    }
+
+    /* ── PAGE LOAD ANIMATION ── */
+    .wrapper { animation: pageIn 0.6s ease both; }
+    @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
 <body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Background layers -->
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="dot-grid"></div>
+
 <div class="wrapper">
 
+  <!-- HEADER -->
   <header>
     <div class="logo-block">
-      <img src="nsg-logo.svg" alt="NSG Group Logo" style="height: 64px; width: auto;">
-      <div class="logo-text">
-        <p>KPI Dashboard</p>
+      <div class="logo-img-wrap">
+        <img src="nsg-logo.svg" alt="NSG Group" style="height:60px; width:auto; display:block;">
+      </div>
+      <div class="logo-text-block">
+        <span class="logo-subtitle">Internal Portal · v2.0</span>
       </div>
     </div>
+
+    <div class="header-center">
+      <div class="nav-pill">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+      </div>
+    </div>
+
     <div class="header-right">
-      <div class="date-badge" id="live-date"></div>
-      <div class="status-pill">Portal Active</div>
+      <div class="date-chip" id="live-date"></div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        Live
+      </div>
     </div>
   </header>
 
+  <!-- HERO -->
   <div class="hero">
-    <div class="hero-left">
-      <h2>Target Condition <br>KPI Dashboard</h2>
-      <p>Quick access to all KPI reference documents and SharePoint resources. </p>
+    <div class="hero-bg-text">KPI</div>
+    <div>
+      <div class="hero-eyebrow">Target Condition · Apr 2026</div>
+      <h1 class="hero-title">
+        KPI <span class="highlight">Dashboard</span><br>Performance Hub
+      </h1>
+      <p class="hero-sub">Quick access to all KPI reference documents and SharePoint resources. Links will be activated by your supervisor.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value" id="count-kpi">10</span>
+          <span class="stat-label">KPI Targets</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">APR</span>
+          <span class="stat-label">Deadline</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">2026</span>
+          <span class="stat-label">Target Year</span>
+        </div>
+      </div>
     </div>
-    <div class="target-badge">
-      <div class="target-label">Target Deadline</div>
-      <div class="target-date">APR 2026</div>
+    <div class="deadline-badge">
+      <div class="deadline-label">Target Deadline</div>
+      <div class="deadline-month">APR</div>
+      <div class="deadline-year">2026</div>
+      <div class="deadline-progress">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <div class="progress-label">62% of year elapsed</div>
+      </div>
     </div>
   </div>
 
-  <div class="section-label">
-    <span>KPI Items — 10 Targets</span>
+  <!-- SECTION HEADER -->
+  <div class="section-header">
+    <div class="section-left">
+      <span class="section-tag">KPI Items</span>
+      <span class="section-title-text">10 Performance Targets</span>
+    </div>
+    <span class="section-count">Click any card to open SharePoint resource</span>
   </div>
 
+  <!-- KPI GRID -->
   <div class="kpi-grid">
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">01</div>
       <div class="kpi-top">
-        <div class="kpi-number">01 · Training</div>
+        <div class="kpi-category">Training</div>
         <div class="kpi-title">Role-based Training</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">02</div>
       <div class="kpi-top">
-        <div class="kpi-number">02 · Risk</div>
+        <div class="kpi-category">Risk</div>
         <div class="kpi-title">Risk-based Thinking</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">03</div>
       <div class="kpi-top">
-        <div class="kpi-number">03 · Knowledge</div>
+        <div class="kpi-category">Knowledge</div>
         <div class="kpi-title">Lessons Learned</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">04</div>
       <div class="kpi-top">
-        <div class="kpi-number">04 · Training</div>
+        <div class="kpi-category">Training</div>
         <div class="kpi-title">Training Effectiveness</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">05</div>
       <div class="kpi-top">
-        <div class="kpi-number">05 · Quality</div>
+        <div class="kpi-category">Quality</div>
         <div class="kpi-title">Corrective Action</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">06</div>
       <div class="kpi-top">
-        <div class="kpi-number">06 · Compliance</div>
+        <div class="kpi-category">Compliance</div>
         <div class="kpi-title">Standard Work Compliance</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">07</div>
       <div class="kpi-top">
-        <div class="kpi-number">07 · Customer</div>
+        <div class="kpi-category">Customer</div>
         <div class="kpi-title">Reduction of Customer Complaint</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">08</div>
       <div class="kpi-top">
-        <div class="kpi-number">08 · Safety</div>
+        <div class="kpi-category">Safety</div>
         <div class="kpi-title">No Spike Case</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">09</div>
       <div class="kpi-top">
-        <div class="kpi-number">09 · Process</div>
+        <div class="kpi-category">Process</div>
         <div class="kpi-title">Reduction in Next Process Reject (POGG)</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
     <a href="https://www.google.com" target="_blank" rel="noopener" class="kpi-card">
+      <div class="card-num">10</div>
       <div class="kpi-top">
-        <div class="kpi-number">10 · Logistics</div>
+        <div class="kpi-category">Logistics</div>
         <div class="kpi-title">Reduction in Return Cargo</div>
       </div>
-      <span class="link-btn">Open <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></span>
+      <div class="open-btn">
+        Open
+        <div class="btn-arrow"><svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+      </div>
     </a>
 
   </div>
 
+  <!-- FOOTER -->
   <footer>
-    <p>© 2026 <strong>NSG Group</strong> — Nippon Sheet Glass Co., Ltd. — Internal Use Only</p>
+    <div class="footer-left">
+      <img src="nsg-logo.svg" alt="NSG" class="footer-logo">
+      <div class="footer-text">
+        © 2026 <strong>NSG Group</strong> — Nippon Sheet Glass Co., Ltd. — Internal Use Only
+      </div>
+    </div>
+    <div class="footer-right">
+      <span class="footer-badge">Portal v2.0</span>
+      <span class="footer-badge">GitHub Pages</span>
+    </div>
   </footer>
 
 </div>
+
 <script>
+  // ── Live date ──
   function updateDate() {
     const now = new Date();
-    const opts = { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' };
+    const opts = { weekday:'short', day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' };
     document.getElementById('live-date').textContent = now.toLocaleString('en-GB', opts).toUpperCase();
   }
   updateDate();
   setInterval(updateDate, 30000);
+
+  // ── Custom cursor ──
+  const cursor     = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+
+  // Ring follows with lag
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Hover state on cards
+  document.querySelectorAll('.kpi-card, .open-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('hover');
+      cursorRing.classList.add('hover');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('hover');
+      cursorRing.classList.remove('hover');
+    });
+  });
+
+  // Hide cursor when leaving window
+  document.addEventListener('mouseleave', () => {
+    cursor.style.opacity = '0';
+    cursorRing.style.opacity = '0';
+  });
+  document.addEventListener('mouseenter', () => {
+    cursor.style.opacity = '1';
+    cursorRing.style.opacity = '1';
+  });
+
+  // ── Count-up animation for stats ──
+  function countUp(el, target, duration) {
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { el.textContent = target; clearInterval(timer); return; }
+      el.textContent = Math.floor(start);
+    }, 16);
+  }
+  countUp(document.getElementById('count-kpi'), 10, 1200);
 </script>
 </body>
 </html>
