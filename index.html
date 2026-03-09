@@ -8,23 +8,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --blue-900: #03253A;
+      --blue-900: #012A45;
       --blue-800: #0A3D5C;
-      --blue-600: #0077B6;
-      --blue-400: #00B4D8;
-      --blue-200: #90E0EF;
-      --blue-100: #CAF0F8;
-      --blue-50:  #E8F7FB;
+      --blue-600: #005F96;
+      --blue-400: #0096C7;
+      --blue-200: #48CAE4;
+      --blue-100: #ADE8F4;
+      --blue-50:  #D0F0FA;
       --white:    #FFFFFF;
-      --slate:    #F0F7FA;
-      --text-1:   #03253A;
-      --text-2:   #2C6E8A;
-      --text-3:   #7BAFC4;
+      --slate:    #D6EAF2;
+      --text-1:   #011F33;
+      --text-2:   #1A4F6E;
+      --text-3:   #4A8FA8;
       --accent:   #FF6B35;
       --success:  #06D6A0;
-      --card-bg:  rgba(255,255,255,0.72);
-      --card-border: rgba(0,180,216,0.18);
-      --glow: rgba(0,180,216,0.25);
+      --card-bg:  rgba(255,255,255,0.95);
+      --card-border: rgba(0,96,199,0.28);
+      --glow: rgba(0,150,199,0.3);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,9 +72,9 @@
       inset: 0;
       z-index: 0;
       background:
-        radial-gradient(ellipse 80% 60% at -10% -10%, rgba(0,119,182,0.08) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 50% at 110% 110%, rgba(0,180,216,0.07) 0%, transparent 55%),
-        linear-gradient(175deg, #EBF6FB 0%, #F5FAFC 40%, #EDF5F8 100%);
+        radial-gradient(ellipse 80% 60% at -10% -10%, rgba(0,96,199,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 110% 110%, rgba(0,150,199,0.15) 0%, transparent 55%),
+        linear-gradient(175deg, #B8DCF0 0%, #CCE8F4 40%, #C2E2F0 100%);
     }
 
     /* floating orbs */
@@ -87,9 +87,9 @@
       z-index: 0;
       animation: drift 18s ease-in-out infinite;
     }
-    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,180,216,0.25), transparent 70%); top: -150px; left: -150px; animation-delay: 0s; }
-    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,119,182,0.2), transparent 70%); bottom: -100px; right: -100px; animation-delay: -6s; }
-    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(144,224,239,0.3), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -12s; }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,96,199,0.22), transparent 70%); top: -150px; left: -150px; animation-delay: 0s; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,150,199,0.18), transparent 70%); bottom: -100px; right: -100px; animation-delay: -6s; }
+    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,180,216,0.15), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -12s; }
 
     @keyframes drift {
       0%,100% { transform: translate(0,0) scale(1); }
@@ -102,7 +102,7 @@
       position: fixed;
       inset: 0;
       z-index: 0;
-      background-image: radial-gradient(circle, rgba(0,119,182,0.06) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(0,80,160,0.12) 1px, transparent 1px);
       background-size: 28px 28px;
     }
 
@@ -130,7 +130,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--blue-400), rgba(0,180,216,0.4), transparent);
+      background: linear-gradient(90deg, transparent, var(--blue-600), var(--blue-400), transparent);
     }
 
     .logo-block { display: flex; align-items: center; gap: 1.4rem; }
@@ -196,7 +196,7 @@
       font-size: 0.6rem;
       color: var(--text-2);
       letter-spacing: 0.1em;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.95);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 6px 14px;
@@ -235,7 +235,7 @@
       gap: 3rem;
       margin-bottom: 2rem;
       padding: 1.6rem 2rem;
-      background: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.82);
       border: 1px solid var(--card-border);
       border-radius: 24px;
       backdrop-filter: blur(16px);
@@ -490,14 +490,14 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 1.6rem 1.5rem 1.4rem;
+      padding: 1.8rem 1.6rem 1.6rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 1.4rem;
       text-decoration: none;
       color: inherit;
-      min-height: 170px;
+      min-height: 185px;
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(16px);
@@ -566,7 +566,7 @@
 
     .kpi-card:hover {
       transform: translateY(-5px) scale(1.01);
-      box-shadow: 0 20px 60px rgba(0,119,182,0.14), 0 4px 16px rgba(0,180,216,0.1);
+      box-shadow: 0 20px 60px rgba(0,80,160,0.22), 0 4px 16px rgba(0,150,199,0.18);
       border-color: rgba(0,180,216,0.35);
       background: rgba(255,255,255,0.88);
     }
@@ -601,8 +601,8 @@
 
     .kpi-title {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 1.05rem;
+      font-weight: 800;
       color: var(--text-1);
       line-height: 1.35;
       letter-spacing: -0.01em;
@@ -615,9 +615,9 @@
       justify-content: space-between;
       background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-400) 100%);
       color: white;
-      padding: 10px 16px;
+      padding: 13px 18px;
       border-radius: 10px;
-      font-size: 0.76rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -660,7 +660,7 @@
     footer {
       margin-top: 4.5rem;
       padding: 1.8rem 2.5rem;
-      background: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.82);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       backdrop-filter: blur(12px);
