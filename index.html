@@ -170,24 +170,65 @@
       gap: 8px;
     }
 
-    .nav-pill {
-      background: rgba(255,255,255,0.8);
+    /* ── DARK MODE TOGGLE ── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.88);
       border: 1px solid var(--card-border);
       border-radius: 100px;
-      padding: 6px 8px;
-      display: flex;
-      gap: 4px;
+      padding: 6px 14px 6px 10px;
       backdrop-filter: blur(12px);
-      box-shadow: 0 2px 20px rgba(0,119,182,0.08);
+      box-shadow: 0 2px 20px rgba(0,119,182,0.1);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .nav-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--blue-200);
-      transition: background 0.2s, transform 0.2s;
+    .toggle-icon {
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: transform 0.4s ease;
     }
-    .nav-dot.active { background: var(--blue-600); transform: scale(1.3); }
+
+    .toggle-track {
+      width: 36px;
+      height: 20px;
+      background: var(--blue-200);
+      border-radius: 100px;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    .toggle-thumb {
+      width: 14px; height: 14px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform 0.3s cubic-bezier(.23,1,.32,1), background 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--text-2);
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    /* Dark mode active state */
+    body.dark .theme-toggle {
+      background: rgba(20,30,48,0.9);
+      border-color: rgba(0,180,216,0.3);
+    }
+    body.dark .toggle-track { background: var(--blue-400); }
+    body.dark .toggle-thumb { transform: translateX(16px); background: var(--blue-900); }
+    body.dark .toggle-icon { transform: rotate(180deg); }
+    body.dark .toggle-label { color: var(--text-2); }
 
     .header-right { display: flex; align-items: center; gap: 1.2rem; }
 
@@ -721,6 +762,139 @@
     /* ── PAGE LOAD ANIMATION ── */
     .wrapper { animation: pageIn 0.6s ease both; }
     @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ════════════════════════════════
+       DARK MODE
+    ════════════════════════════════ */
+    body.dark {
+      --slate:       #0B1624;
+      --text-1:      #E8F4FA;
+      --text-2:      #7EC8E3;
+      --text-3:      #4A8FA8;
+      --card-bg:     rgba(15, 28, 48, 0.95);
+      --card-border: rgba(0,180,216,0.22);
+      --blue-600:    #0096C7;
+      --blue-400:    #00B4D8;
+      --blue-200:    #48CAE4;
+    }
+
+    body.dark .bg-layer {
+      background:
+        radial-gradient(ellipse 80% 60% at -10% -10%, rgba(0,96,199,0.2) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 110% 110%, rgba(0,150,199,0.18) 0%, transparent 55%),
+        linear-gradient(175deg, #06111E 0%, #0B1A2C 40%, #081524 100%);
+    }
+
+    body.dark .dot-grid {
+      background-image: radial-gradient(circle, rgba(0,180,216,0.1) 1px, transparent 1px);
+    }
+
+    body.dark .orb-1 { background: radial-gradient(circle, rgba(0,96,199,0.3), transparent 70%); }
+    body.dark .orb-2 { background: radial-gradient(circle, rgba(0,150,199,0.25), transparent 70%); }
+    body.dark .orb-3 { background: radial-gradient(circle, rgba(0,180,216,0.2), transparent 70%); }
+
+    body.dark header::after {
+      background: linear-gradient(90deg, transparent, rgba(0,180,216,0.6), rgba(0,180,216,0.3), transparent);
+    }
+
+    body.dark .date-chip {
+      background: rgba(10,25,45,0.95);
+      color: var(--text-2);
+      border-color: rgba(0,180,216,0.25);
+    }
+
+    body.dark .logo-subtitle { color: var(--text-2); }
+
+    body.dark .hero {
+      background: rgba(10, 22, 40, 0.88);
+      border-color: rgba(0,180,216,0.2);
+    }
+
+    body.dark .hero-eyebrow {
+      background: rgba(0,150,199,0.12);
+      border-color: rgba(0,180,216,0.2);
+      color: var(--blue-200);
+    }
+
+    body.dark .hero-title { color: var(--text-1); }
+    body.dark .hero-sub   { color: var(--text-2); }
+
+    body.dark .hero-stats { border-top-color: rgba(0,180,216,0.15); }
+
+    body.dark .stat-value {
+      background: linear-gradient(135deg, #48CAE4, #00B4D8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.dark .stat-label { color: var(--text-3); }
+
+    body.dark .deadline-badge {
+      background: linear-gradient(145deg, #021828 0%, #0A3D5C 100%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,180,216,0.15);
+    }
+
+    body.dark .section-tag {
+      background: rgba(0,150,199,0.12);
+      border-color: rgba(0,180,216,0.2);
+      color: var(--blue-200);
+    }
+
+    body.dark .section-title-text { color: var(--text-1); }
+    body.dark .section-count      { color: var(--text-3); }
+
+    body.dark .kpi-card {
+      background: rgba(10, 22, 42, 0.92);
+      border-color: rgba(0,180,216,0.18);
+    }
+
+    body.dark .kpi-card:hover {
+      background: rgba(14, 30, 56, 0.98);
+      border-color: rgba(0,180,216,0.4);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,150,199,0.12);
+    }
+
+    body.dark .card-num   { color: rgba(0,180,216,0.1); }
+    body.dark .kpi-card:hover .card-num { color: rgba(0,180,216,0.18); }
+
+    body.dark .kpi-category { color: var(--blue-200); }
+    body.dark .kpi-category::before { background: var(--blue-400); }
+
+    body.dark .kpi-title { color: var(--text-1); }
+
+    body.dark .open-btn {
+      background: linear-gradient(135deg, #0A3D5C 0%, #0096C7 100%);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    body.dark .kpi-card:hover .open-btn {
+      box-shadow: 0 8px 28px rgba(0,150,199,0.4);
+    }
+
+    body.dark footer {
+      background: rgba(8,18,34,0.92);
+      border-color: rgba(0,180,216,0.15);
+    }
+
+    body.dark .footer-text  { color: var(--text-3); }
+    body.dark .footer-text strong { color: var(--text-2); }
+    body.dark .footer-badge {
+      background: rgba(0,150,199,0.1);
+      border-color: rgba(0,180,216,0.18);
+      color: var(--text-3);
+    }
+
+    body.dark .hero-bg-text { color: rgba(0,180,216,0.04); }
+
+    /* smooth transition for everything */
+    body, .bg-layer, .hero, .kpi-card, .date-chip,
+    .theme-toggle, footer, .section-tag, .open-btn,
+    .deadline-badge, .hero-eyebrow {
+      transition-property: background, border-color, color, box-shadow;
+      transition-duration: 0.35s;
+      transition-timing-function: ease;
+    }
   </style>
 </head>
 <body>
@@ -750,10 +924,12 @@
     </div>
 
     <div class="header-center">
-      <div class="nav-pill">
-        <div class="nav-dot active"></div>
-        <div class="nav-dot"></div>
-        <div class="nav-dot"></div>
+      <div class="theme-toggle" id="themeToggle" title="Toggle dark / light mode">
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-track">
+          <div class="toggle-thumb"></div>
+        </div>
+        <span class="toggle-label" id="toggleLabel">Light</span>
       </div>
     </div>
 
@@ -1017,6 +1193,35 @@
     }, 16);
   }
   countUp(document.getElementById('count-kpi'), 10, 1200);
+
+  // ── Dark mode toggle ──
+  const toggle      = document.getElementById('themeToggle');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const toggleIcon  = toggle.querySelector('.toggle-icon');
+
+  // Restore saved preference
+  if (localStorage.getItem('nsg-theme') === 'dark') {
+    document.body.classList.add('dark');
+    toggleLabel.textContent = 'Dark';
+    toggleIcon.textContent  = '🌙';
+  }
+
+  toggle.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark');
+    toggleLabel.textContent = isDark ? 'Dark'  : 'Light';
+    toggleIcon.textContent  = isDark ? '🌙'    : '☀️';
+    localStorage.setItem('nsg-theme', isDark ? 'dark' : 'light');
+  });
+
+  // Also allow cursor hover effect on toggle
+  toggle.addEventListener('mouseenter', () => {
+    cursor.classList.add('hover');
+    cursorRing.classList.add('hover');
+  });
+  toggle.addEventListener('mouseleave', () => {
+    cursor.classList.remove('hover');
+    cursorRing.classList.remove('hover');
+  });
 </script>
 </body>
 </html>
